@@ -55,6 +55,7 @@ export default () => {
     validateUrl(url, urlsList, i18n)
       .then((validUrl) => {
         watchedState.rssForm.error = null;
+        watchedState.rssForm.valid = true;
         watchedState.rssForm.state = 'processing';
         return fetchData(validUrl);
       })
@@ -65,6 +66,8 @@ export default () => {
         watchedState.feeds = [newFeed, ...watchedState.feeds];
         watchedState.posts = [...newPosts, ...watchedState.posts];
         watchedState.rssForm.state = 'success';
+        watchedState.rssForm.error = null;
+        watchedState.rssForm.valid = true;
       })
       .catch((err) => {
         watchedState.rssForm.valid = err.name !== 'ValidationError';
