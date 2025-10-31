@@ -139,32 +139,61 @@ const handleProcessState = (processState, elements, i18n) => {
   }
 };
 
+// Новые функции для обработки изменений состояния
+const handleModalIdChange = (state, value, elements) => {
+  renderModal(state, value, elements);
+};
+
+const handleVisitedPostsChange = (state, elements, i18n) => {
+  renderPosts(state, elements, i18n);
+};
+
+const handleFeedsChange = (state, elements, i18n) => {
+  renderFeeds(state, elements, i18n);
+};
+
+const handlePostsChange = (state, elements, i18n) => {
+  renderPosts(state, elements, i18n);
+};
+
+const handleErrorChange = (value, elements, i18n) => {
+  renderError(value, elements, i18n);
+};
+
+const handleValidChange = (value, elements) => {
+  if (!value) {
+    elements.input.classList.add('is-invalid');
+    return;
+  }
+  elements.input.classList.remove('is-invalid');
+};
+
+const handleStateChange = (value, elements, i18n) => {
+  handleProcessState(value, elements, i18n);
+};
+
 export default (state, elements, i18n) => onChange(state, (path, value) => {
   switch (path) {
     case 'uiState.modalId':
-      renderModal(state, value, elements);
+      handleModalIdChange(state, value, elements);
       break;
     case 'uiState.visitedPosts':
-      renderPosts(state, elements, i18n);
+      handleVisitedPostsChange(state, elements, i18n);
       break;
     case 'feeds':
-      renderFeeds(state, elements, i18n);
+      handleFeedsChange(state, elements, i18n);
       break;
     case 'posts':
-      renderPosts(state, elements, i18n);
+      handlePostsChange(state, elements, i18n);
       break;
     case 'rssForm.error':
-      renderError(value, elements, i18n);
+      handleErrorChange(value, elements, i18n);
       break;
     case 'rssForm.valid':
-      if (!value) {
-        elements.input.classList.add('is-invalid');
-        return;
-      }
-      elements.input.classList.remove('is-invalid');
+      handleValidChange(value, elements);
       break;
     case 'rssForm.state':
-      handleProcessState(value, elements, i18n);
+      handleStateChange(value, elements, i18n);
       break;
     default:
       throw new Error(`Unknown path: ${path}`);
