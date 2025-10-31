@@ -1,0 +1,14 @@
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      input: './src/index.js',
+    },
+  },
+  server: {
+    port: 3000,
+  },
+});
