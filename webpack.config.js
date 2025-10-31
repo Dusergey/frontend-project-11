@@ -1,10 +1,20 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import path from 'path';
 
 export default {
   mode: process.env.NODE_ENV || 'development',
+  entry: './src/index.js',
+  output: {
+    path: path.resolve('dist'),
+    filename: 'bundle.js',
+    clean: true,
+  },
   module: {
     rules: [
-      { test: /\.css$/, use: ['style-loader', 'css-loader', 'postcss-loader'] },
+      { 
+        test: /\.css$/, 
+        use: ['style-loader', 'css-loader', 'postcss-loader'] 
+      },
       {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'],
@@ -24,4 +34,9 @@ export default {
       template: 'index.html',
     }),
   ],
+  devServer: {
+    static: './dist',
+    port: 3000,
+    open: true,
+  },
 };
