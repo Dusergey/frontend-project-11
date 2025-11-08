@@ -10,7 +10,7 @@ import updatePosts from './utils/updater.js';
 
 export default () => {
   const elements = {
-    form: document.querySelector('form'),
+    form: document.querySelector('#rss-form'),
     input: document.querySelector('#url-input'),
     button: document.querySelector('button[type="submit"]'),
     feedbackContainer: document.querySelector('.feedback'),
@@ -39,44 +39,44 @@ export default () => {
   i18n.init({
     lng: 'ru',
     debug: true,
-    resources: {
-      ru,
-    },
+    resources: { ru },
   });
 
   const watchedState = initView(initialState, elements, i18n);
 
-  elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
+  elements.form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // блокируем редирект
     watchedState.rssForm.state = 'filling';
+
     const formData = new FormData(e.target);
     const url = formData.get('url');
     const urlsList = watchedState.feeds.map((feed) => feed.url);
-    validateUrl(url, urlsList, i18n)
-      .then((validUrl) => {
-        watchedState.rssForm.error = null;
-        watchedState.rssForm.state = 'processing';
-        return fetchData(validUrl);
-      })
-      .then(({ data }) => {
-        const [feed, posts] = getFeedAndPosts(data.contents);
-        const newFeed = { ...feed, id: _.uniqueId(), url };
-        const newPosts = posts.map((post) => ({ ...post, id: _.uniqueId(), feedId: newFeed.id }));
-        watchedState.feeds = [newFeed, ...watchedState.feeds];
-        watchedState.posts = [...newPosts, ...watchedState.posts];
-        watchedState.rssForm.state = 'success';
-      })
-      .catch((err) => {
-        watchedState.rssForm.valid = err.name !== 'ValidationError';
-        if (err.name === 'ValidationError') {
-          watchedState.rssForm.error = err.message;
-        } else if (err.NotValidRss) {
-          watchedState.rssForm.error = 'form.errors.notValidRss';
-        } else if (axios.isAxiosError(err)) {
-          watchedState.rssForm.error = 'form.errors.networkProblems';
-        }
-        watchedState.rssForm.state = 'filling';
-      });
+
+    try {
+      const validUrl = await validateUrl(url, urlsList, i18n);
+      watchedState.rssForm.error = null;
+      watchedState.rssForm.state = 'processing';
+
+      const { data } = await fetchData(validUrl);
+      const [feed, posts] = getFeedAndPosts(data.contents);
+
+      const newFeed = { ...feed, id: _.uniqueId(), url };
+      const newPosts = posts.map((post) => ({ ...post, id: _.uniqueId(), feedId: newFeed.id }));
+
+      watchedState.feeds = [newFeed, ...watchedState.feeds];
+      watchedState.posts = [...newPosts, ...watchedState.posts];
+      watchedState.rssForm.state = 'success';
+    } catch (err) {
+      watchedState.rssForm.valid = err.name !== 'ValidationError';
+      if (err.name === 'ValidationError') {
+        watchedState.rssForm.error = err.message;
+      } else if (err.NotValidRss) {
+        watchedState.rssForm.error = 'form.errors.notValidRss';
+      } else if (axios.isAxiosError(err)) {
+        watchedState.rssForm.error = 'form.errors.networkProblems';
+      }
+      watchedState.rssForm.state = 'filling';
+    }
   });
 
   elements.postsContainer.addEventListener('click', ({ target }) => {
@@ -91,5 +91,5 @@ export default () => {
     }
   });
 
-  setTimeout(() => updatePosts(watchedState), 5000);
+  setInterval(() => updatePosts(watchedState), 5000);
 };
