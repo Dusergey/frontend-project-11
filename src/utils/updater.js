@@ -3,6 +3,8 @@ import _ from 'lodash';
 import fetchData from './fetchData.js';
 import getFeedAndPosts from './parser.js';
 
+const UPDATE_INTERVAL = 5000; // вынесено в константу
+
 const updatePosts = (watchedState) => {
   const { feeds, posts } = watchedState;
   const promises = feeds.map(({ url, id }) => fetchData(url)
@@ -17,7 +19,7 @@ const updatePosts = (watchedState) => {
     })
     .catch(console.error));
   Promise.all(promises)
-    .finally(() => setTimeout(() => updatePosts(watchedState), 5000));
+    .finally(() => setTimeout(() => updatePosts(watchedState), UPDATE_INTERVAL));
 };
 
 export default updatePosts;
