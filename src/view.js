@@ -3,7 +3,6 @@ import onChange from 'on-change';
 
 const renderFeeds = (state, elements, i18n) => {
   elements.feedsContainer.innerHTML = '';
-
   const divEl = document.createElement('div');
   divEl.classList.add('card', 'border-0');
   elements.feedsContainer.append(divEl);
@@ -57,6 +56,7 @@ const renderPosts = (state, elements, i18n) => {
 
   const ulEl = document.createElement('ul');
   ulEl.classList.add('list-group', 'border-0', 'rounded-0');
+
   state.posts.forEach(({ id, title, link }) => {
     const classes = state.uiState.visitedPosts.has(id) ? 'fw-normal link-secondary' : 'fw-bold';
     const liEl = document.createElement('li');
@@ -82,6 +82,7 @@ const renderPosts = (state, elements, i18n) => {
 
     ulEl.append(liEl);
   });
+
   divEl.append(ulEl);
 };
 
@@ -105,34 +106,47 @@ const renderModal = (state, postId, elements) => {
   elements.modal.querySelector('a.btn').href = post.link;
 };
 
+// новые функции для обработки состояния формы
+const setFillingState = (elements) => {
+  elements.input.readOnly = false;
+  elements.button.disabled = false;
+};
+
+const setProcessingState = (elements) => {
+  elements.input.readOnly = true;
+  elements.button.disabled = true;
+  elements.button.innerHTML = '';
+  elements.spanSpinner.classList.add('spinner-border', 'spinner-border-sm');
+  elements.spanSpinner.setAttribute('role', 'status');
+  elements.spanSpinner.setAttribute('aria-hidden', 'true');
+  elements.button.append(elements.spanSpinner);
+  elements.spanLoading.classList.add('sr-only');
+  elements.spanLoading.textContent = '  Загрузка...';
+  elements.button.append(elements.spanLoading);
+};
+
+const setSuccessState = (elements, i18n) => {
+  elements.input.readOnly = false;
+  elements.button.disabled = false;
+  elements.button.innerHTML = '';
+  elements.button.textContent = 'Добавить';
+  elements.form.reset();
+  elements.form.focus();
+  elements.feedbackContainer.classList.remove('text-danger');
+  elements.feedbackContainer.classList.add('text-success');
+  elements.feedbackContainer.textContent = i18n.t('form.success');
+};
+
 const handleProcessState = (processState, elements, i18n) => {
   switch (processState) {
     case 'filling':
-      elements.input.readOnly = false;
-      elements.button.disabled = false;
+      setFillingState(elements);
       break;
     case 'processing':
-      elements.input.readOnly = true;
-      elements.button.disabled = true;
-      elements.button.innerHTML = '';
-      elements.spanSpinner.classList.add('spinner-border', 'spinner-border-sm');
-      elements.spanSpinner.setAttribute('role', 'status');
-      elements.spanSpinner.setAttribute('aria-hidden', 'true');
-      elements.button.append(elements.spanSpinner);
-      elements.spanLoading.classList.add('sr-only');
-      elements.spanLoading.textContent = '  Загрузка...';
-      elements.button.append(elements.spanLoading);
+      setProcessingState(elements);
       break;
     case 'success':
-      elements.input.readOnly = false;
-      elements.button.disabled = false;
-      elements.button.innerHTML = '';
-      elements.button.textContent = 'Добавить';
-      elements.form.reset();
-      elements.form.focus();
-      elements.feedbackContainer.classList.remove('text-danger');
-      elements.feedbackContainer.classList.add('text-success');
-      elements.feedbackContainer.textContent = i18n.t('form.success');
+      setSuccessState(elements, i18n);
       break;
     default:
       throw new Error(`Unknown process state: ${processState}`);
