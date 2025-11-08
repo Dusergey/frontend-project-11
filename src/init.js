@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import axios from 'axios';
 import i18n from './i18n.js';
-import { fetchData, getFeedAndPosts, validateUrl } from './utils.js';
+import { fetchData, getFeedAndPosts, validateUrl } from './src/utils.js';
 
 const elements = {
   form: document.querySelector('.rss-form'),
