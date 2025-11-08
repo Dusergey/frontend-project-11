@@ -2,8 +2,15 @@ import { defineConfig } from 'vite';
 import path from 'path';
 
 export default defineConfig({
-  root: path.resolve(__dirname, 'code'), // делаем code/ корнем
+  // Делаем папку code корнем проекта для Vite
+  root: path.resolve(__dirname, 'code'),
+
+  // Настройки сборки
   build: {
-    outDir: path.resolve(__dirname, 'dist'), // куда положить сборку
+    // Папка для итоговой сборки
+    outDir: path.resolve(__dirname, 'dist'),
+
+    // Относительные пути в итоговой сборке
+    emptyOutDir: true,
   },
 });
