@@ -1,5 +1,7 @@
+// @ts-check
+
+import runApp from './init.js';
 import './styles.scss';
 import 'bootstrap';
-import initApp from './init.js';
 
-initApp();
+runApp();
