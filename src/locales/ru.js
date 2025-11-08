@@ -1,26 +1,21 @@
 export default {
   translation: {
-    text: {
-      header: 'RSS агрегатор',
-      slogan: 'Начните читать RSS сегодня! Это легко, это красиво.',
-      example: 'Пример: 1. http://lorem-rss.herokuapp.com/feed 2. https://ru.hexlet.io/lessons.rss',
-      label: 'Ссылка RSS',
-      posts: 'Посты',
-      feeds: 'Фиды',
-      submitButton: 'Добавить',
-      readButton: 'Просмотр',
+    form: {
+      success: 'RSS успешно загружен',
+      errors: {
+        notUniqueUrl: 'RSS уже существует',
+        required: 'Не должно быть пустым',
+        notValidUrl: 'Ссылка должна быть валидным URL',
+        notValidRss: 'Ресурс не содержит валидный RSS',
+        networkProblems: 'Ошибка сети',
+      },
     },
-    feedback: {
-      error: {
-        urlRequired: 'Не должно быть пустым',
-        notValidURL: 'Ссылка должна быть валидным URL',
-        alreadyExists: 'RSS уже существует',
-        netError: 'Ошибка сети',
-        parseError: 'Ресурс не содержит валидный RSS',
-      },
-      success: {
-        feedAdded: 'RSS успешно загружен',
-      },
+    feeds: {
+      title: 'Фиды',
+    },
+    posts: {
+      title: 'Посты',
+      button: 'Просмотр',
     },
   },
 };
