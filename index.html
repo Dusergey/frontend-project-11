@@ -29,7 +29,6 @@
           <div class="col-md-10 col-lg-8 mx-auto text-white">
             <h1 class="display-3 mb-0">RSS агрегатор</h1>
             <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
-            <!-- УБРАН action -->
             <form class="rss-form text-body">
               <div class="row">
                 <div class="col">
@@ -39,6 +38,7 @@
                       class="form-control w-100"
                       name="url"
                       placeholder="Ссылка RSS"
+                      aria-label="url"
                       autocomplete="off"
                       autofocus
                       required
@@ -47,7 +47,7 @@
                   </div>
                 </div>
                 <div class="col-auto">
-                  <button class="btn btn-primary btn-lg h-100 px-sm-5" type="submit" aria-label="add">Добавить</button>
+                  <button class="btn btn-primary btn-lg h-100 px-sm-5" type="submit">Добавить</button>
                 </div>
               </div>
             </form>
