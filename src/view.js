@@ -87,6 +87,7 @@ const renderPosts = (state, elements, i18n) => {
 };
 
 const renderError = (error, elements, i18n) => {
+  elements.feedbackContainer.style.display = 'block';
   elements.feedbackContainer.textContent = '';
   if (error) {
     elements.input.readOnly = false;
@@ -106,10 +107,10 @@ const renderModal = (state, postId, elements) => {
   elements.modal.querySelector('a.btn').href = post.link;
 };
 
-// новые функции для обработки состояния формы
 const setFillingState = (elements) => {
   elements.input.readOnly = false;
   elements.button.disabled = false;
+  elements.feedbackContainer.style.display = 'none';
 };
 
 const setProcessingState = (elements) => {
@@ -134,6 +135,7 @@ const setSuccessState = (elements, i18n) => {
   elements.form.focus();
   elements.feedbackContainer.classList.remove('text-danger');
   elements.feedbackContainer.classList.add('text-success');
+  elements.feedbackContainer.style.display = 'block';
   elements.feedbackContainer.textContent = i18n.t('form.success');
 };
 
@@ -153,34 +155,35 @@ const handleProcessState = (processState, elements, i18n) => {
   }
 };
 
-export default (state, elements, i18n) => onChange(state, (path, value) => {
-  switch (path) {
-    case 'uiState.modalId':
-      renderModal(state, value, elements);
-      break;
-    case 'uiState.visitedPosts':
-      renderPosts(state, elements, i18n);
-      break;
-    case 'feeds':
-      renderFeeds(state, elements, i18n);
-      break;
-    case 'posts':
-      renderPosts(state, elements, i18n);
-      break;
-    case 'rssForm.error':
-      renderError(value, elements, i18n);
-      break;
-    case 'rssForm.valid':
-      if (!value) {
-        elements.input.classList.add('is-invalid');
-        return;
-      }
-      elements.input.classList.remove('is-invalid');
-      break;
-    case 'rssForm.state':
-      handleProcessState(value, elements, i18n);
-      break;
-    default:
-      throw new Error(`Unknown path: ${path}`);
-  }
-});
+export default (state, elements, i18n) =>
+  onChange(state, (path, value) => {
+    switch (path) {
+      case 'uiState.modalId':
+        renderModal(state, value, elements);
+        break;
+      case 'uiState.visitedPosts':
+        renderPosts(state, elements, i18n);
+        break;
+      case 'feeds':
+        renderFeeds(state, elements, i18n);
+        break;
+      case 'posts':
+        renderPosts(state, elements, i18n);
+        break;
+      case 'rssForm.error':
+        renderError(value, elements, i18n);
+        break;
+      case 'rssForm.valid':
+        if (!value) {
+          elements.input.classList.add('is-invalid');
+          return;
+        }
+        elements.input.classList.remove('is-invalid');
+        break;
+      case 'rssForm.state':
+        handleProcessState(value, elements, i18n);
+        break;
+      default:
+        throw new Error(`Unknown path: ${path}`);
+    }
+  });
