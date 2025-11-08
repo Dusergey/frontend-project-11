@@ -1,188 +1,172 @@
+/* eslint-disable no-param-reassign */
 import onChange from 'on-change';
 
-const renderText = (i18n) => {
-  const textElemente = {
-    header: document.querySelector('h1'),
-    slogan: document.querySelector('p.lead'),
-    example: document.querySelector('p.text-muted'),
-    label: document.querySelector('label'),
-  };
+const renderFeeds = (state, elements, i18n) => {
+  elements.feedsContainer.innerHTML = '';
 
-  textElemente.header.textContent = i18n.t('text.header');
-  textElemente.slogan.textContent = i18n.t('text.slogan');
-  textElemente.example.textContent = i18n.t('text.example');
-  textElemente.label.textContent = i18n.t('text.label');
+  const divEl = document.createElement('div');
+  divEl.classList.add('card', 'border-0');
+  elements.feedsContainer.append(divEl);
+
+  const divTitleEl = document.createElement('div');
+  divTitleEl.classList.add('card-body');
+  divEl.append(divTitleEl);
+
+  const h2El = document.createElement('h2');
+  h2El.classList.add('card-title', 'h4');
+  h2El.textContent = i18n.t('feeds.title');
+  divTitleEl.append(h2El);
+
+  const ulEl = document.createElement('ul');
+  ulEl.classList.add('list-group', 'border-0', 'rounded-0');
+
+  state.feeds.forEach((feed) => {
+    const liEl = document.createElement('li');
+    liEl.classList.add('list-group-item', 'border-0', 'border-end-0');
+
+    const h3El = document.createElement('h3');
+    h3El.classList.add('h6', 'm-0');
+    h3El.textContent = feed.title;
+    liEl.append(h3El);
+
+    const pEl = document.createElement('p');
+    pEl.classList.add('m-0', 'small', 'text-black-50');
+    pEl.textContent = feed.description;
+    liEl.append(pEl);
+
+    ulEl.prepend(liEl);
+  });
+
+  divEl.append(ulEl);
 };
 
-const renderFeedback = (state, i18n, elements) => {
-  const feedbackEl = document.querySelector('.feedback');
-  const fromContainer = elements.form.parentElement;
-  if (feedbackEl) { feedbackEl.remove(); }
-  elements.urlInput.classList.remove('is-invalid');
+const renderPosts = (state, elements, i18n) => {
+  elements.postsContainer.innerHTML = '';
+  const divEl = document.createElement('div');
+  divEl.classList.add('card', 'border-0');
+  elements.postsContainer.prepend(divEl);
 
-  if (state.form.processFeedback) {
-    const newFeedbackEl = document.createElement('p');
-    newFeedbackEl.classList.add('feedback', 'm-0', 'position-absolute', 'small');
-    if (state.form.processFeedback.type === 'error') {
-      elements.urlInput.classList.add('is-invalid');
-      newFeedbackEl.classList.add('text-danger');
-    }
-    if (state.form.processFeedback.type === 'success') {
-      newFeedbackEl.classList.add('text-success');
-    }
-    newFeedbackEl.textContent = i18n.t(state.form.processFeedback.key);
-    fromContainer.append(newFeedbackEl);
+  const divTitleEl = document.createElement('div');
+  divTitleEl.classList.add('card-body');
+  divEl.append(divTitleEl);
+
+  const h2El = document.createElement('h2');
+  h2El.classList.add('card-title', 'h4');
+  h2El.textContent = i18n.t('posts.title');
+  divTitleEl.prepend(h2El);
+
+  const ulEl = document.createElement('ul');
+  ulEl.classList.add('list-group', 'border-0', 'rounded-0');
+  state.posts.forEach(({ id, title, link }) => {
+    const classes = state.uiState.visitedPosts.has(id) ? 'fw-normal link-secondary' : 'fw-bold';
+    const liEl = document.createElement('li');
+    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+
+    const aEl = document.createElement('a');
+    aEl.setAttribute('class', classes);
+    aEl.setAttribute('href', link);
+    aEl.dataset.id = id;
+    aEl.setAttribute('target', '_blank');
+    aEl.setAttribute('rel', 'noopener noreferrer');
+    aEl.textContent = title;
+    liEl.append(aEl);
+
+    const buttonEl = document.createElement('button');
+    buttonEl.setAttribute('type', 'button');
+    buttonEl.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    buttonEl.dataset.id = id;
+    buttonEl.dataset.bsToggle = 'modal';
+    buttonEl.dataset.bsTarget = '#modal';
+    buttonEl.textContent = i18n.t('posts.button');
+    liEl.append(buttonEl);
+
+    ulEl.append(liEl);
+  });
+  divEl.append(ulEl);
+};
+
+const renderError = (error, elements, i18n) => {
+  elements.feedbackContainer.textContent = '';
+  if (error) {
+    elements.input.readOnly = false;
+    elements.button.disabled = false;
+    elements.button.innerHTML = '';
+    elements.button.textContent = 'Добавить';
+    elements.feedbackContainer.classList.remove('text-success');
+    elements.feedbackContainer.classList.add('text-danger');
+    elements.feedbackContainer.textContent = i18n.t(error);
   }
 };
 
-const renderFeeds = (state, i18n) => {
-  const feedsList = document.createElement('ul');
-  feedsList.classList.add('list-group', 'border-0', 'rounded-0');
-  state.feeds.forEach((feed) => {
-    const feedEl = document.createElement('li');
-    feedEl.classList.add('list-group-item', 'border-0', 'border-end-0');
-
-    const feedTitle = document.createElement('h3');
-    feedTitle.classList.add('h6', 'm0');
-    feedTitle.textContent = feed.title;
-
-    const feedDescription = document.createElement('p');
-    feedDescription.classList.add('m-0', 'small', 'text-black-50');
-    feedDescription.textContent = feed.description;
-
-    feedEl.append(feedTitle, feedDescription);
-    feedsList.append(feedEl);
-  });
-
-  const feedsCard = document.createElement('div');
-  feedsCard.classList.add('card', 'border-0');
-  const feedCardBody = document.createElement('div');
-  feedCardBody.classList.add('card-body');
-  const feedBodyTitle = document.createElement('h2');
-  feedBodyTitle.classList.add('card-title', 'h4');
-  feedBodyTitle.textContent = i18n.t('text.feeds');
-
-  feedCardBody.append(feedBodyTitle);
-  feedsCard.append(feedCardBody, feedsList);
-
-  const feedsContainer = document.querySelector('.feeds');
-  const oldFeedsCard = feedsContainer.querySelector('.card');
-  if (oldFeedsCard) { oldFeedsCard.remove(); }
-  feedsContainer.append(feedsCard);
+const renderModal = (state, postId, elements) => {
+  const post = state.posts.find((item) => item.id === postId);
+  elements.modal.querySelector('.modal-title').textContent = post.title;
+  elements.modal.querySelector('.modal-body').textContent = post.description;
+  elements.modal.querySelector('a.btn').href = post.link;
 };
 
-const renderPosts = (state, i18n) => {
-  const postsList = document.createElement('ul');
-  postsList.classList.add('list-group', 'border-0', 'rounded-0');
-
-  state.posts.forEach((post) => {
-    const postEl = document.createElement('li');
-    postEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-item-start', 'border-0', 'border-end-0');
-
-    const postTitle = document.createElement('a');
-    const isRead = state.ui.readPosts.includes(post.postId);
-    const postTitleClasses = isRead ? ['fw-normal', 'link-secondary'] : ['fw-bold'];
-    postTitle.classList.add(...postTitleClasses);
-    postTitle.href = post.link;
-    postTitle.setAttribute('data-id', post.postId);
-    postTitle.setAttribute('target', '_blank');
-    postTitle.rel = 'noopener noreferrer';
-    postTitle.textContent = post.title;
-
-    const readButton = document.createElement('button');
-    readButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    readButton.type = 'button';
-    readButton.setAttribute('data-id', post.postId);
-    readButton.setAttribute('data-bs-toggle', 'modal');
-    readButton.setAttribute('data-bs-target', '#modal');
-    readButton.textContent = i18n.t('text.readButton');
-
-    postEl.append(postTitle, readButton);
-    postsList.append(postEl);
-  });
-
-  const postsCard = document.createElement('div');
-  postsCard.classList.add('card', 'border-0');
-  const postCardBody = document.createElement('div');
-  postCardBody.classList.add('card-body');
-  const postBodyTitle = document.createElement('h2');
-  postBodyTitle.classList.add('card-title', 'h4');
-  postBodyTitle.textContent = i18n.t('text.posts');
-
-  postCardBody.append(postBodyTitle);
-  postsCard.append(postCardBody, postsList);
-
-  const postsContainer = document.querySelector('.posts');
-  const oldPostsCard = postsContainer.querySelector('.card');
-  if (oldPostsCard) { oldPostsCard.remove(); }
-  postsContainer.append(postsCard);
-};
-
-const renderModal = (state) => {
-  const modalEl = document.querySelector('.modal');
-  const modalPost = state.posts.find((post) => post.postId === state.ui.modalPostId);
-  modalEl.querySelector('.modal-title').textContent = modalPost.title;
-  modalEl.querySelector('.modal-body').textContent = modalPost.description;
-  modalEl.querySelector('.full-article').href = modalPost.link;
-};
-
-const renderDownloadingStatus = (state, elements, i18n, status) => {
-  switch (status) {
-    case 'idle':
-      elements.urlInput.classList.remove('disabled');
-      elements.submitButton.classList.remove('disabled');
+const handleProcessState = (processState, elements, i18n) => {
+  switch (processState) {
+    case 'filling':
+      elements.input.readOnly = false;
+      elements.button.disabled = false;
+      break;
+    case 'processing':
+      elements.input.readOnly = true;
+      elements.button.disabled = true;
+      elements.button.innerHTML = '';
+      elements.spanSpinner.classList.add('spinner-border', 'spinner-border-sm');
+      elements.spanSpinner.setAttribute('role', 'status');
+      elements.spanSpinner.setAttribute('aria-hidden', 'true');
+      elements.button.append(elements.spanSpinner);
+      elements.spanLoading.classList.add('sr-only');
+      elements.spanLoading.textContent = '  Загрузка...';
+      elements.button.append(elements.spanLoading);
+      break;
+    case 'success':
+      elements.input.readOnly = false;
+      elements.button.disabled = false;
+      elements.button.innerHTML = '';
+      elements.button.textContent = 'Добавить';
       elements.form.reset();
-      elements.urlInput.focus();
-      renderFeedback(state, i18n, elements);
-      break;
-    case 'downloading':
-      elements.urlInput.classList.add('disabled');
-      elements.submitButton.classList.add('disabled');
-      break;
-    case 'failed':
-      elements.urlInput.classList.remove('disabled');
-      elements.submitButton.classList.remove('disabled');
-      elements.urlInput.focus();
-      renderFeedback(state, i18n, elements);
+      elements.form.focus();
+      elements.feedbackContainer.classList.remove('text-danger');
+      elements.feedbackContainer.classList.add('text-success');
+      elements.feedbackContainer.textContent = i18n.t('form.success');
       break;
     default:
-      break;
+      throw new Error(`Unknown process state: ${processState}`);
   }
 };
 
-const render = (state, elements, i18n) => (path, value) => {
+export default (state, elements, i18n) => onChange(state, (path, value) => {
   switch (path) {
-    case 'lng':
-      renderText(i18n);
+    case 'uiState.modalId':
+      renderModal(state, value, elements);
       break;
-    case 'form.valid':
-      if (value) {
-        elements.submitButton.classList.remove('disabled');
-      } else {
-        elements.submitButton.classList.add('disabled');
-      }
-      break;
-    case 'downloadingProcess.status':
-      renderDownloadingStatus(state, elements, i18n, value);
-      break;
-    case 'form.processFeedback':
-      renderFeedback(state, i18n, elements);
+    case 'uiState.visitedPosts':
+      renderPosts(state, elements, i18n);
       break;
     case 'feeds':
-      renderFeeds(state, i18n);
+      renderFeeds(state, elements, i18n);
       break;
     case 'posts':
-      renderPosts(state, i18n);
+      renderPosts(state, elements, i18n);
       break;
-    case 'ui.readPosts':
-      renderPosts(state, i18n);
+    case 'rssForm.error':
+      renderError(value, elements, i18n);
       break;
-    case 'ui.modalPostId':
-      renderModal(state);
+    case 'rssForm.valid':
+      if (!value) {
+        elements.input.classList.add('is-invalid');
+        return;
+      }
+      elements.input.classList.remove('is-invalid');
+      break;
+    case 'rssForm.state':
+      handleProcessState(value, elements, i18n);
       break;
     default:
-      break;
+      throw new Error(`Unknown path: ${path}`);
   }
-};
-
-export default (state, elements, i18next) => onChange(state, render(state, elements, i18next));
+});
