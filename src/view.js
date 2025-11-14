@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import onChange from 'on-change';
+import onChange from 'on-change'
 
 const renderFeeds = (state, elements, i18n) => {
   elements.feedsContainer.innerHTML = ''
