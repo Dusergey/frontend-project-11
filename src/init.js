@@ -1,12 +1,12 @@
-import i18next from 'i18next';
-import _ from 'lodash';
-import axios from 'axios';
-import fetchData from './utils/fetchData.js';
-import initView from './view.js';
-import ru from './locales/ru.js';
-import validateUrl from './utils/validator.js';
-import getFeedAndPosts from './utils/parser.js';
-import updatePosts from './utils/updater.js';
+import i18next from 'i18next'
+import _ from 'lodash'
+import axios from 'axios'
+import fetchData from './utils/fetchData.js'
+import initView from './view.js'
+import ru from './locales/ru.js'
+import validateUrl from './utils/validator.js'
+import getFeedAndPosts from './utils/parser.js'
+import updatePosts from './utils/updater.js'
 
 export default () => {
   const elements = {
@@ -19,7 +19,7 @@ export default () => {
     modal: document.querySelector('#modal'),
     spanSpinner: document.createElement('span'),
     spanLoading: document.createElement('span'),
-  };
+  }
 
   const initialState = {
     rssForm: {
@@ -33,80 +33,80 @@ export default () => {
       visitedPosts: new Set(),
       modalId: null,
     },
-  };
+  }
 
   // Инициализация i18n
-  const i18n = i18next.createInstance();
+  const i18n = i18next.createInstance()
   i18n.init({
     lng: 'ru',
     debug: false,
     resources: {
       ru,
     },
-  });
+  })
 
   // Создание реактивного состояния
-  const watchedState = initView(initialState, elements, i18n);
+  const watchedState = initView(initialState, elements, i18n)
 
   // Обработчик отправки формы
   elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    watchedState.rssForm.state = 'filling';
-    const formData = new FormData(e.target);
-    const url = formData.get('url');
-    const urlsList = watchedState.feeds.map((feed) => feed.url);
+    e.preventDefault()
+    watchedState.rssForm.state = 'filling'
+    const formData = new FormData(e.target)
+    const url = formData.get('url')
+    const urlsList = watchedState.feeds.map((feed) => feed.url)
 
     validateUrl(url, urlsList, i18n)
       .then((validUrl) => {
-        watchedState.rssForm.error = null;
-        watchedState.rssForm.state = 'processing';
-        return fetchData(validUrl);
+        watchedState.rssForm.error = null
+        watchedState.rssForm.state = 'processing'
+        return fetchData(validUrl)
       })
       .then(({ data }) => {
-        const [feed, posts] = getFeedAndPosts(data.contents);
-        const newFeed = { ...feed, id: _.uniqueId(), url };
-        const newPosts = posts.map((post) => ({ ...post, id: _.uniqueId(), feedId: newFeed.id }));
-        watchedState.feeds = [newFeed, ...watchedState.feeds];
-        watchedState.posts = [...newPosts, ...watchedState.posts];
-        watchedState.rssForm.state = 'success';
+        const [feed, posts] = getFeedAndPosts(data.contents)
+        const newFeed = { ...feed, id: _.uniqueId(), url }
+        const newPosts = posts.map((post) => ({ ...post, id: _.uniqueId(), feedId: newFeed.id }))
+        watchedState.feeds = [newFeed, ...watchedState.feeds]
+        watchedState.posts = [...newPosts, ...watchedState.posts]
+        watchedState.rssForm.state = 'success'
       })
       .catch((err) => {
-        watchedState.rssForm.valid = err.name !== 'ValidationError';
+        watchedState.rssForm.valid = err.name !== 'ValidationError'
         if (err.name === 'ValidationError') {
-          watchedState.rssForm.error = err.message;
+          watchedState.rssForm.error = err.message
         } else if (err.NotValidRss) {
-          watchedState.rssForm.error = i18n.t('form.errors.notValidRss');
+          watchedState.rssForm.error = i18n.t('form.errors.notValidRss')
         } else if (axios.isAxiosError(err)) {
-          watchedState.rssForm.error = i18n.t('form.errors.networkProblems');
+          watchedState.rssForm.error = i18n.t('form.errors.networkProblems')
         }
-        watchedState.rssForm.state = 'filling';
+        watchedState.rssForm.state = 'filling'
 
         // Обновление текста ошибки в контейнере
-        elements.feedbackContainer.textContent = watchedState.rssForm.error;
-        elements.feedbackContainer.classList.add('text-danger'); // Делаем ошибку красной
+        elements.feedbackContainer.textContent = watchedState.rssForm.error
+        elements.feedbackContainer.classList.add('text-danger') // Делаем ошибку красной
 
         // Сделаем контейнер для ошибок видимым (если не был виден)
-        elements.feedbackContainer.style.display = 'block'; 
-      });
-  });
+        elements.feedbackContainer.style.display = 'block'
+      })
+  })
 
   // Обработчик клика по постам и модальному окну
   elements.postsContainer.addEventListener('click', ({ target }) => {
-    const link = target.closest('a');
-    const button = target.closest('button');
+    const link = target.closest('a')
+    const button = target.closest('button')
 
     if (link) {
-      const { id } = link.dataset;
-      watchedState.uiState.visitedPosts.add(id);
+      const { id } = link.dataset
+      watchedState.uiState.visitedPosts.add(id)
     }
 
     if (button) {
-      const { id } = button.dataset;
-      watchedState.uiState.visitedPosts.add(id);
-      watchedState.uiState.modalId = id;
+      const { id } = button.dataset
+      watchedState.uiState.visitedPosts.add(id)
+      watchedState.uiState.modalId = id
     }
-  });
+  })
 
   // Обновление постов каждые 5 секунд
-  setInterval(() => updatePosts(watchedState), 5000);
-};
+  setInterval(() => updatePosts(watchedState), 5000)
+}
