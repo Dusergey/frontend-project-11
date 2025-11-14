@@ -1,6 +1,7 @@
 module.exports = {
-    plugins: [
-      'postcss-preset-env',
-    ],
-  };
-  
+  plugins: [
+    'postcss-import', // Для поддержки импорта стилей
+    'postcss-preset-env', // Для использования современных CSS фич
+    'autoprefixer', // Для добавления автопрефиксов
+  ],
+};
