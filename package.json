@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Dusergey/frontend-project-11#readme",
   "devDependencies": {
+    "postcss-import": "^14.0.1",
     "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
