@@ -14,12 +14,11 @@ export default (data) => {
   };
 
   const posts = Array.from(parsedXml.querySelectorAll('item'))
-    .map((item) => (
-      {
-        title: item.querySelector('title').textContent,
-        description: item.querySelector('description').textContent,
-        link: item.querySelector('link').textContent,
-      }
-    ));
+    .map(item => ({
+      title: item.querySelector('title').textContent,
+      description: item.querySelector('description').textContent,
+      link: item.querySelector('link').textContent,
+    }));
+
   return [feed, posts];
 };
