@@ -1,7 +1,11 @@
+// postcss.config.cjs
 module.exports = {
   plugins: [
-    'postcss-import', // Для поддержки импорта стилей
-    'postcss-preset-env', // Для использования современных CSS фич
-    'autoprefixer', // Для добавления автопрефиксов
+    [
+      'postcss-preset-env',
+      {
+        // можно оставить пустым, будут дефолтные настройки
+      },
+    ],
   ],
 };
