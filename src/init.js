@@ -13,7 +13,7 @@ export default () => {
     form: document.querySelector('form'),
     input: document.querySelector('#url-input'),
     button: document.querySelector('button[type="submit"]'),
-    feedbackContainer: document.querySelector('.feedback'),
+    feedbackContainer: document.querySelector('.feedback'), // Элемент для ошибки
     postsContainer: document.querySelector('.posts'),
     feedsContainer: document.querySelector('.feeds'),
     modal: document.querySelector('#modal'),
@@ -80,6 +80,13 @@ export default () => {
           watchedState.rssForm.error = i18n.t('form.errors.networkProblems');
         }
         watchedState.rssForm.state = 'filling';
+
+        // Обновление текста ошибки в контейнере
+        elements.feedbackContainer.textContent = watchedState.rssForm.error;
+        elements.feedbackContainer.classList.add('text-danger'); // Делаем ошибку красной
+
+        // Сделаем контейнер для ошибок видимым (если не был виден)
+        elements.feedbackContainer.style.display = 'block'; 
       });
   });
 
