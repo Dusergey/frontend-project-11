@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+import * as yup from 'yup'
 
 export default (url, urlsList, i18n) => {
   yup.setLocale({
@@ -9,13 +9,13 @@ export default (url, urlsList, i18n) => {
       required: i18n.t('form.errors.required'),
       notOneOf: i18n.t('form.errors.notUniqueUrl'),
     },
-  });
+  })
 
   const schema = yup
     .string()
     .required()
     .url()
-    .notOneOf(urlsList);
+    .notOneOf(urlsList)
 
-  return schema.validate(url);
-};
+  return schema.validate(url)
+}
