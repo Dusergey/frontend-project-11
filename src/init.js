@@ -13,7 +13,7 @@ export default () => {
     form: document.querySelector('form'),
     input: document.querySelector('#url-input'),
     button: document.querySelector('button[type="submit"]'),
-    feedbackContainer: document.querySelector('.feedback'), // Элемент для ошибки
+    feedbackContainer: document.querySelector('.feedback'),
     postsContainer: document.querySelector('.posts'),
     feedsContainer: document.querySelector('.feeds'),
     modal: document.querySelector('#modal'),
@@ -35,7 +35,6 @@ export default () => {
     },
   }
 
-  // Инициализация i18n
   const i18n = i18next.createInstance()
   i18n.init({
     lng: 'ru',
@@ -45,10 +44,8 @@ export default () => {
     },
   })
 
-  // Создание реактивного состояния
   const watchedState = initView(initialState, elements, i18n)
 
-  // Обработчик отправки формы
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault()
     watchedState.rssForm.state = 'filling'
@@ -80,17 +77,12 @@ export default () => {
           watchedState.rssForm.error = i18n.t('form.errors.networkProblems')
         }
         watchedState.rssForm.state = 'filling'
-
-        // Обновление текста ошибки в контейнере
         elements.feedbackContainer.textContent = watchedState.rssForm.error
-        elements.feedbackContainer.classList.add('text-danger') // Делаем ошибку красной
-
-        // Сделаем контейнер для ошибок видимым (если не был виден)
+        elements.feedbackContainer.classList.add('text-danger')
         elements.feedbackContainer.style.display = 'block'
       })
   })
 
-  // Обработчик клика по постам и модальному окну
   elements.postsContainer.addEventListener('click', ({ target }) => {
     const link = target.closest('a')
     const button = target.closest('button')
@@ -107,6 +99,5 @@ export default () => {
     }
   })
 
-  // Обновление постов каждые 5 секунд
   setInterval(() => updatePosts(watchedState), 5000)
 }
