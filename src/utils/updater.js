@@ -5,7 +5,7 @@ import getFeedAndPosts from './parser.js'
 const UPDATE_INTERVAL = 5000 // вынесено в константу
 
 const updatePosts = watchedState => {
-  const { feeds, posts } = watchedState
+  const { feeds, posts } = (watchedState)
   const promises = feeds.map(({ url, id }) => fetchData(url)
     .then(({ data }) => {
       const [, receivedPosts] = getFeedAndPosts(data.contents)
