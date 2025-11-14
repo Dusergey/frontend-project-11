@@ -20,7 +20,7 @@ export default {
       },
       {
         test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader', 'postcss-loader'], // Подключение postcss-loader
       },
       {
         test: /\.woff2?(\?v=[0-9].[0-9].[0-9])?$/,
