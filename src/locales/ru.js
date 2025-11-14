@@ -18,4 +18,4 @@ export default {
       button: 'Просмотр',
     },
   },
-};
+}
