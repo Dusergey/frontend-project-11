@@ -18,7 +18,7 @@ const renderFeeds = (state, elements, i18n) => {
   const ulEl = document.createElement('ul')
   ulEl.classList.add('list-group', 'border-0', 'rounded-0')
 
-  state.feeds.forEach(feed => {
+  state.feeds.forEach((feed) => {
     const liEl = document.createElement('li')
     liEl.classList.add('list-group-item', 'border-0', 'border-end-0')
 
@@ -100,7 +100,7 @@ const renderError = (error, elements, i18n) => {
 }
 
 const renderModal = (state, postId, elements) => {
-  const post = state.posts.find(item => item.id === postId)
+  const post = state.posts.find((item) => item.id === postId)
   elements.modal.querySelector('.modal-title').textContent = post.title
   elements.modal.querySelector('.modal-body').textContent = post.description
   elements.modal.querySelector('a.btn').href = post.link
