@@ -51,10 +51,10 @@ export default () => {
     watchedState.rssForm.state = 'filling'
     const formData = new FormData(e.target)
     const url = formData.get('url')
-    const urlsList = watchedState.feeds.map((feed) => feed.url)
+    const urlsList = watchedState.feeds.map(feed => feed.url) // Исправлено: убраны скобки
 
     validateUrl(url, urlsList, i18n)
-      .then((validUrl) => {
+      .then(validUrl => { // Исправлено: убраны скобки
         watchedState.rssForm.error = null
         watchedState.rssForm.state = 'processing'
         return fetchData(validUrl)
@@ -62,12 +62,12 @@ export default () => {
       .then(({ data }) => {
         const [feed, posts] = getFeedAndPosts(data.contents)
         const newFeed = { ...feed, id: _.uniqueId(), url }
-        const newPosts = posts.map((post) => ({ ...post, id: _.uniqueId(), feedId: newFeed.id }))
+        const newPosts = posts.map(post => ({ ...post, id: _.uniqueId(), feedId: newFeed.id })) // Исправлено: убраны скобки
         watchedState.feeds = [newFeed, ...watchedState.feeds]
         watchedState.posts = [...newPosts, ...watchedState.posts]
         watchedState.rssForm.state = 'success'
       })
-      .catch((err) => {
+      .catch(err => { // Исправлено: убраны скобки
         watchedState.rssForm.valid = err.name !== 'ValidationError'
         if (err.name === 'ValidationError') {
           watchedState.rssForm.error = err.message
@@ -83,8 +83,8 @@ export default () => {
       })
   })
 
-  elements.postsContainer.addEventListener('click', (e) => { 
-    const { target } = e 
+  elements.postsContainer.addEventListener('click', e => { // Исправлено: убраны скобки
+    const { target } = e
     const link = target.closest('a')
     const button = target.closest('button')
 
@@ -100,7 +100,7 @@ export default () => {
     }
   })
 
-  setInterval(() => { 
+  setInterval(() => {
     updatePosts(watchedState)
-  }, 5000) // 
-}
+  }, 5000)
+} // Исправлено: убраны лишние комментарии и пробелы
