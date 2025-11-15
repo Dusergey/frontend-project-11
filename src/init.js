@@ -52,10 +52,10 @@ export default () => {
 
     const formData = new FormData(e.target)
     const url = formData.get('url')
-    const urlsList = watchedState.feeds.map((feed) => feed.url)
+    const urlsList = watchedState.feeds.map(feed => feed.url)
 
     validateUrl(url, urlsList, i18n)
-      .then(validUrl => {
+      .then((validUrl) => {
         watchedState.rssForm.error = null
         watchedState.rssForm.state = 'processing'
         return fetchData(validUrl)
@@ -72,7 +72,8 @@ export default () => {
         watchedState.feeds = [newFeed, ...watchedState.feeds]
         watchedState.posts = [...newPosts, ...watchedState.posts]
         watchedState.rssForm.state = 'success'
-      })
+      }
+      )
       .catch((err) => {
         watchedState.rssForm.valid = err.name !== 'ValidationError'
 
