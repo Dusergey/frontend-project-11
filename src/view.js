@@ -18,7 +18,7 @@ const renderFeeds = (state, elements, i18n) => {
   const ulEl = document.createElement('ul')
   ulEl.classList.add('list-group', 'border-0', 'rounded-0')
 
-  state.feeds.forEach((feed) => { // Исправлено: добавлены скобки
+  state.feeds.forEach(feed => {
     const liEl = document.createElement('li')
     liEl.classList.add('list-group-item', 'border-0', 'border-end-0')
 
@@ -57,9 +57,19 @@ const renderPosts = (state, elements, i18n) => {
   ulEl.classList.add('list-group', 'border-0', 'rounded-0')
 
   state.posts.forEach(({ id, title, link }) => {
-    const classes = state.uiState.visitedPosts.has(id) ? 'fw-normal link-secondary' : 'fw-bold'
+    const classes = state.uiState.visitedPosts.has(id)
+      ? 'fw-normal link-secondary'
+      : 'fw-bold'
+
     const liEl = document.createElement('li')
-    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
+    liEl.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+      'border-0',
+      'border-end-0'
+    )
 
     const aEl = document.createElement('a')
     aEl.setAttribute('class', classes)
@@ -88,6 +98,7 @@ const renderPosts = (state, elements, i18n) => {
 const renderError = (error, elements, i18n) => {
   elements.feedbackContainer.style.display = 'block'
   elements.feedbackContainer.textContent = ''
+
   if (error) {
     elements.input.readOnly = false
     elements.button.disabled = false
@@ -100,19 +111,19 @@ const renderError = (error, elements, i18n) => {
 }
 
 const renderModal = (state, postId, elements) => {
-  const post = state.posts.find((item) => item.id === postId) // Исправлено: добавлены скобки
+  const post = state.posts.find(item => item.id === postId)
   elements.modal.querySelector('.modal-title').textContent = post.title
   elements.modal.querySelector('.modal-body').textContent = post.description
   elements.modal.querySelector('a.btn').href = post.link
 }
 
-const setFillingState = (elements) => {
+const setFillingState = elements => {
   elements.input.readOnly = false
   elements.button.disabled = false
   elements.feedbackContainer.style.display = 'none'
 }
 
-const setProcessingState = (elements) => {
+const setProcessingState = elements => {
   elements.input.readOnly = true
   elements.button.disabled = true
   elements.button.innerHTML = ''
@@ -154,24 +165,29 @@ const handleProcessState = (processState, elements, i18n) => {
   }
 }
 
-export default (state, elements, i18n) => // Оставлено без изменений
-  onChange(state, (path, value) => {
+export default (state, elements, i18n) => {
+  return onChange(state, (path, value) => {
     switch (path) {
       case 'uiState.modalId':
         renderModal(state, value, elements)
         break
+
       case 'uiState.visitedPosts':
         renderPosts(state, elements, i18n)
         break
+
       case 'feeds':
         renderFeeds(state, elements, i18n)
         break
+
       case 'posts':
         renderPosts(state, elements, i18n)
         break
+
       case 'rssForm.error':
         renderError(value, elements, i18n)
         break
+
       case 'rssForm.valid':
         if (!value) {
           elements.input.classList.add('is-invalid')
@@ -179,10 +195,13 @@ export default (state, elements, i18n) => // Оставлено без изме�
         }
         elements.input.classList.remove('is-invalid')
         break
+
       case 'rssForm.state':
         handleProcessState(value, elements, i18n)
         break
+
       default:
         throw new Error(`Unknown path: ${path}`)
     }
   })
+}
