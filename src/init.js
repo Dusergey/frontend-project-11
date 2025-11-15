@@ -62,7 +62,7 @@ export default () => {
       })
       .then(({ data }) => {
         const [feed, posts] = getFeedAndPosts(data.contents)
-        const newFeed = { ...feed, id: _.uniqueId(), url, }
+        const newFeed = { ...feed, id: _.uniqueId(), url }
         const newPosts = posts.map(post => ({
           ...post,
           id: _.uniqueId(),
@@ -78,9 +78,11 @@ export default () => {
 
         if (err.name === 'ValidationError') {
           watchedState.rssForm.error = err.message
-        } else if (err.NotValidRss) {
+        }
+        else if (err.NotValidRss) {
           watchedState.rssForm.error = i18n.t('form.errors.notValidRss')
-        } else if (axios.isAxiosError(err)) {
+        }
+        else if (axios.isAxiosError(err)) {
           watchedState.rssForm.error = i18n.t('form.errors.networkProblems')
         }
 
