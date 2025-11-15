@@ -18,7 +18,7 @@ const renderFeeds = (state, elements, i18n) => {
   const ulEl = document.createElement('ul')
   ulEl.classList.add('list-group', 'border-0', 'rounded-0')
 
-  state.feeds.forEach(feed => { // Исправлено: убраны скобки вокруг одного параметра
+  state.feeds.forEach((feed) => { // Исправлено: добавлены скобки
     const liEl = document.createElement('li')
     liEl.classList.add('list-group-item', 'border-0', 'border-end-0')
 
@@ -56,7 +56,7 @@ const renderPosts = (state, elements, i18n) => {
   const ulEl = document.createElement('ul')
   ulEl.classList.add('list-group', 'border-0', 'rounded-0')
 
-  state.posts.forEach(({ id, title, link }) => { // Скобки оставлены, так как используется деструктуризация
+  state.posts.forEach(({ id, title, link }) => {
     const classes = state.uiState.visitedPosts.has(id) ? 'fw-normal link-secondary' : 'fw-bold'
     const liEl = document.createElement('li')
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0')
@@ -100,7 +100,7 @@ const renderError = (error, elements, i18n) => {
 }
 
 const renderModal = (state, postId, elements) => {
-  const post = state.posts.find(item => item.id === postId) // Исправлено: убраны скобки вокруг одного параметра
+  const post = state.posts.find((item) => item.id === postId) // Исправлено: добавлены скобки
   elements.modal.querySelector('.modal-title').textContent = post.title
   elements.modal.querySelector('.modal-body').textContent = post.description
   elements.modal.querySelector('a.btn').href = post.link
@@ -154,7 +154,7 @@ const handleProcessState = (processState, elements, i18n) => {
   }
 }
 
-export default (state, elements, i18n) => // Исправлено: добавлены фигурные скобки для тела функции
+export default (state, elements, i18n) => // Оставлено без изменений
   onChange(state, (path, value) => {
     switch (path) {
       case 'uiState.modalId':
