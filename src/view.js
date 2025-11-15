@@ -56,7 +56,7 @@ const renderPosts = (state, elements, i18n) => {
   const ulEl = document.createElement('ul')
   ulEl.classList.add('list-group', 'border-0', 'rounded-0')
 
-  state.posts.forEach(({ id, title, link, }) => {
+  state.posts.forEach(({ id, title, link }) => {
     const classes = state.uiState.visitedPosts.has(id)
       ? 'fw-normal link-secondary'
       : 'fw-bold'
@@ -68,7 +68,7 @@ const renderPosts = (state, elements, i18n) => {
       'justify-content-between',
       'align-items-start',
       'border-0',
-      'border-end-0'
+      'border-end-0',
     )
 
     const aEl = document.createElement('a')
@@ -111,7 +111,7 @@ const renderError = (error, elements, i18n) => {
 }
 
 const renderModal = (state, postId, elements) => {
-  const post = state.posts.find((item) => item.id === postId)
+  const post = state.posts.find(item => item.id === postId)
   elements.modal.querySelector('.modal-title').textContent = post.title
   elements.modal.querySelector('.modal-body').textContent = post.description
   elements.modal.querySelector('a.btn').href = post.link
