@@ -62,7 +62,7 @@ export default () => {
       })
       .then(({ data }) => {
         const [feed, posts] = getFeedAndPosts(data.contents)
-        const newFeed = { ...feed, id: _.uniqueId(), url }
+        const newFeed = { ...feed, id: _.uniqueId(), url, }
         const newPosts = posts.map(post => ({
           ...post,
           id: _.uniqueId(),
@@ -72,8 +72,7 @@ export default () => {
         watchedState.feeds = [newFeed, ...watchedState.feeds]
         watchedState.posts = [...newPosts, ...watchedState.posts]
         watchedState.rssForm.state = 'success'
-      }
-      )
+      })
       .catch((err) => {
         watchedState.rssForm.valid = err.name !== 'ValidationError'
 
