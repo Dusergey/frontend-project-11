@@ -49,12 +49,13 @@ export default () => {
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault()
     watchedState.rssForm.state = 'filling'
+
     const formData = new FormData(e.target)
     const url = formData.get('url')
-    const urlsList = watchedState.feeds.map(feed => feed.url) // Исправлено: убраны скобки
+    const urlsList = watchedState.feeds.map((feed) => feed.url)
 
     validateUrl(url, urlsList, i18n)
-      .then(validUrl => { // Исправлено: убраны скобки
+      .then((validUrl) => {
         watchedState.rssForm.error = null
         watchedState.rssForm.state = 'processing'
         return fetchData(validUrl)
@@ -62,13 +63,19 @@ export default () => {
       .then(({ data }) => {
         const [feed, posts] = getFeedAndPosts(data.contents)
         const newFeed = { ...feed, id: _.uniqueId(), url }
-        const newPosts = posts.map(post => ({ ...post, id: _.uniqueId(), feedId: newFeed.id })) // Исправлено: убраны скобки
+        const newPosts = posts.map((post) => ({
+          ...post,
+          id: _.uniqueId(),
+          feedId: newFeed.id,
+        }))
+
         watchedState.feeds = [newFeed, ...watchedState.feeds]
         watchedState.posts = [...newPosts, ...watchedState.posts]
         watchedState.rssForm.state = 'success'
       })
-      .catch(err => { // Исправлено: убраны скобки
+      .catch((err) => {
         watchedState.rssForm.valid = err.name !== 'ValidationError'
+
         if (err.name === 'ValidationError') {
           watchedState.rssForm.error = err.message
         } else if (err.NotValidRss) {
@@ -76,6 +83,7 @@ export default () => {
         } else if (axios.isAxiosError(err)) {
           watchedState.rssForm.error = i18n.t('form.errors.networkProblems')
         }
+
         watchedState.rssForm.state = 'filling'
         elements.feedbackContainer.textContent = watchedState.rssForm.error
         elements.feedbackContainer.classList.add('text-danger')
@@ -83,7 +91,7 @@ export default () => {
       })
   })
 
-  elements.postsContainer.addEventListener('click', e => { // Исправлено: убраны скобки
+  elements.postsContainer.addEventListener('click', (e) => {
     const { target } = e
     const link = target.closest('a')
     const button = target.closest('button')
@@ -103,4 +111,4 @@ export default () => {
   setInterval(() => {
     updatePosts(watchedState)
   }, 5000)
-} // Исправлено: убраны лишние комментарии и пробелы
+}
