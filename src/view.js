@@ -123,7 +123,7 @@ const setFillingState = (elements) => {
   elements.feedbackContainer.style.display = 'none'
 }
 
-const setProcessingState = elements => {
+const setProcessingState = (elements) => {
   elements.input.readOnly = true
   elements.button.disabled = true
   elements.button.innerHTML = ''
