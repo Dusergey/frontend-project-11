@@ -83,7 +83,8 @@ export default () => {
       })
   })
 
-  elements.postsContainer.addEventListener('click', ({ target }) => {
+  elements.postsContainer.addEventListener('click', (e) => { 
+    const { target } = e 
     const link = target.closest('a')
     const button = target.closest('button')
 
@@ -99,5 +100,7 @@ export default () => {
     }
   })
 
-  setInterval(() => updatePosts(watchedState), 5000)
+  setInterval(() => { 
+    updatePosts(watchedState)
+  }, 5000) // 
 }
